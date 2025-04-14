@@ -1,0 +1,1566 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "PROD Backend 2025 Advertising Platform API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/ads": {
+            "get": {
+                "description": "Возвращает информацию о рекламе, соответствующей таргетингу клиента.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Реклама"
+                ],
+                "summary": "Получить информацию о рекламе для клиента",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор клиента",
+                        "name": "client_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о кампании",
+                        "schema": {
+                            "$ref": "#/definitions/model.AdsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректный идентификатор клиента",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Клиент не найден или не найдена подходящая кампания",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ads/{campaignID}/click": {
+            "post": {
+                "description": "Регистрирует клик клиента по рекламе, проверяя наличие предыдущих действий (просмотр и клик) и сроки действия кампании",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Реклама"
+                ],
+                "summary": "Зарегистрировать клик по рекламе",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор кампании",
+                        "name": "campaignID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Идентификатор клиента",
+                        "name": "ClientID",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AdsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Клик успешно зарегистрирован"
+                    },
+                    "400": {
+                        "description": "Неверный формат идентификаторов клиента или кампании, или клиент уже кликнул",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Клиент или кампания не найдены",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "410": {
+                        "description": "Кампания не началась или завершена",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/advertisers/bulk": {
+            "post": {
+                "description": "Создает или обновляет информацию о рекламодателе с проверкой уникальности идентификатора",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Рекламодатели"
+                ],
+                "summary": "Создать или обновить рекламодателя",
+                "parameters": [
+                    {
+                        "description": "Список рекламодателей для создания или обновления",
+                        "name": "advertisers",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Advertiser"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Информация о рекламодателях, которые были успешно созданы или обновлены",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Advertiser"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные или повторяющиеся идентификаторы рекламодателей",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/advertisers/{advertiserID}": {
+            "get": {
+                "description": "Возвращает информацию о рекламодателе по указанному идентификатору",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Рекламодатели"
+                ],
+                "summary": "Получить информацию о рекламодателе по ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор рекламодателя",
+                        "name": "advertiserID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о рекламодателе",
+                        "schema": {
+                            "$ref": "#/definitions/model.Advertiser"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат идентификатора рекламодателя",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Рекламодатель не найден",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/advertisers/{advertiserID}/campaigns": {
+            "get": {
+                "description": "Возвращает список кампаний для указанного рекламодателя с возможностью пагинации.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Кампании"
+                ],
+                "summary": "Получить список кампаний рекламодателя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор рекламодателя",
+                        "name": "advertiserID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Количество кампаний на страницу",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Номер страницы начиная с 0",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список кампаний",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Campaign"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибки в параметрах запроса",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Рекламодатель не найден",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Создает новую кампанию для рекламодателя, с проверкой параметров, таких как даты, таргетинг, изображение.",
+                "consumes": [
+                    "application/json",
+                    " multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Кампании"
+                ],
+                "summary": "Создать кампанию",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор рекламодателя",
+                        "name": "advertiserID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Изображение для кампании (Доступно только с multipart/form-data)",
+                        "name": "image_file",
+                        "in": "formData"
+                    },
+                    {
+                        "description": "Данные кампании",
+                        "name": "campaign",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CampaignCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Созданная кампания",
+                        "schema": {
+                            "$ref": "#/definitions/model.Campaign"
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибки в данных запроса (неверные даты, некорректный таргетинг, ошибка с изображением)",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Рекламодатель не найден",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Текст или название рекламной кампании не прошли модерацию",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/advertisers/{advertiserID}/campaigns/{campaignID}": {
+            "get": {
+                "description": "Возвращает информацию о кампании для указанного рекламодателя по его ID и ID кампании",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Кампании"
+                ],
+                "summary": "Получить информацию о кампании по ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор рекламодателя",
+                        "name": "advertiserID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор кампании",
+                        "name": "campaignID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о кампании",
+                        "schema": {
+                            "$ref": "#/definitions/model.Campaign"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверные идентификаторы рекламодателя или кампании",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Кампания не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Обновляет данные кампании для указанного рекламодателя и кампании, с учетом проверок на невозможность изменения некоторых полей после запуска кампании. Нельзя передать одновременно image_url и image_file. Скорее всего со swagger не получиться отправить запрос с image_file, используйте для тестирования этого postman или альтернативы.",
+                "consumes": [
+                    "application/json",
+                    " multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Кампании"
+                ],
+                "summary": "Обновить информацию о кампании",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор рекламодателя",
+                        "name": "advertiserID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор кампании",
+                        "name": "campaignID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Обновленные данные кампании",
+                        "name": "campaign",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CampaignUpdate"
+                        }
+                    },
+                    {
+                        "type": "file",
+                        "description": "Изображение для кампании (Доступно только с multipart/form-data)",
+                        "name": "image_file",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Обновленная кампания",
+                        "schema": {
+                            "$ref": "#/definitions/model.Campaign"
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибки в данных запроса (например, некорректные даты или поля, которые нельзя изменить после запуска)",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Кампания не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Текст или название рекламной кампании не прошли модерацию",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаляет кампанию по ID для указанного рекламодателя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Кампании"
+                ],
+                "summary": "Удалить кампанию",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор рекламодателя",
+                        "name": "advertiserID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор кампании",
+                        "name": "campaignID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Кампания успешно удалена"
+                    },
+                    "400": {
+                        "description": "Неверные идентификаторы рекламодателя или кампании",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Кампания не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/text/generate": {
+            "post": {
+                "description": "Создает текст для рекламной кампании по пожеланиям от пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI"
+                ],
+                "summary": "Сгенерировать текст для рекламной кампании",
+                "parameters": [
+                    {
+                        "description": "Название товара и пожелания",
+                        "name": "GenerateInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GenerateTextRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Обновленная кампания",
+                        "schema": {
+                            "$ref": "#/definitions/model.GenerateTextResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.GenerateTextResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ai/text/moderation": {
+            "post": {
+                "description": "Включает или выключает модерацию текстов и названий рекламных кампаний",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI"
+                ],
+                "summary": "Включить или выключить модерацию текстов",
+                "parameters": [
+                    {
+                        "description": "true - включить модерацию, false - выключить модерацию",
+                        "name": "Moderation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ModerationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Обновленная кампания",
+                        "schema": {
+                            "$ref": "#/definitions/model.ModerationRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/bulk": {
+            "post": {
+                "description": "Создает или обновляет информацию о клиентах, переданных в запросе",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Клиенты"
+                ],
+                "summary": "Создать или обновить клиента",
+                "parameters": [
+                    {
+                        "description": "Список клиентов для создания или обновления",
+                        "name": "clients",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Client"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Информация о клиентах, которые были успешно созданы или обновлены",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Client"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные или повторяющиеся идентификаторы клиентов",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/{clientID}": {
+            "get": {
+                "description": "Возвращает информацию о клиенте по указанному идентификатору",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Клиенты"
+                ],
+                "summary": "Получить информацию о клиенте по ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор клиента",
+                        "name": "clientID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о клиенте",
+                        "schema": {
+                            "$ref": "#/definitions/model.Client"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат идентификатора клиента",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Клиент не найден",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ml-scores": {
+            "post": {
+                "description": "Создает или обновляет ML-оценку для клиента и рекламодателя. Я бы хотел возвращать тут 204, но по заданию в спецификации стоит 200.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ML-оценки"
+                ],
+                "summary": "Создать или обновить ML-оценку",
+                "parameters": [
+                    {
+                        "description": "Модель ML-оценки",
+                        "name": "mlScore",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.MLScore"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Операция успешно выполнена"
+                    },
+                    "400": {
+                        "description": "Неверные данные или отсутствуют клиент или рекламодатель",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Клиент или рекламодатель не найдены",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ping": {
+            "get": {
+                "description": "Проверка, что сервер работает и отвечает корректно",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ping"
+                ],
+                "summary": "Проверка работоспособности сервера",
+                "responses": {
+                    "200": {
+                        "description": "Ответ с состоянием сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.PingResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stats/advertisers/{advertiserID}/campaigns": {
+            "get": {
+                "description": "Возвращает агрегированную статистику по указанному рекламодателю",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Статистика"
+                ],
+                "summary": "Получить статистику по рекламодателю",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор рекламодателя",
+                        "name": "advertiserID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Агрегированная статистика по рекламодателю",
+                        "schema": {
+                            "$ref": "#/definitions/model.CampaignStats"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный идентификатор рекламодателя",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Рекламодатель не найден",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stats/advertisers/{advertiserID}/campaigns/daily": {
+            "get": {
+                "description": "Возвращает агрегированную статистику по рекламодателю за каждый день, начиная с даты создания рекламодателя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Статистика"
+                ],
+                "summary": "Получить дневную статистику по рекламодателю",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор рекламодателя",
+                        "name": "advertiserID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Агрегированная статистика по рекламодателю за каждый день",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.CampaignStatsDaily"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный идентификатор рекламодателя",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Рекламодатель не найден",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stats/campaigns/{campaignID}": {
+            "get": {
+                "description": "Возвращает агрегированную статистику по указанной кампании",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Статистика"
+                ],
+                "summary": "Получить статистику по кампании",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор кампании",
+                        "name": "campaignID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Агрегированная статистика по кампании",
+                        "schema": {
+                            "$ref": "#/definitions/model.CampaignStats"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный идентификатор кампании",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Кампания не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stats/campaigns/{campaignID}/daily": {
+            "get": {
+                "description": "Возвращает агрегированную статистику по кампаниям за каждый день от даты начала до текущего дня",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Статистика"
+                ],
+                "summary": "Получить дневную статистику по кампании",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор кампании",
+                        "name": "campaignID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Агрегированная статистика по кампании за каждый день",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.CampaignStatsDaily"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный запрос",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Кампания не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/time/advance": {
+            "get": {
+                "description": "Возвращает текущую дату",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Время"
+                ],
+                "summary": "Получить текущую дату",
+                "responses": {
+                    "200": {
+                        "description": "Дата успешно получена",
+                        "schema": {
+                            "$ref": "#/definitions/model.TimeSetRequest"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Устанавливает текущую дату в кэш, только если она не меньше текущей даты",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Время"
+                ],
+                "summary": "Установить текущую дату",
+                "parameters": [
+                    {
+                        "description": "Запрос на установку текущей даты",
+                        "name": "time",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.TimeSetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Дата успешно установлена",
+                        "schema": {
+                            "$ref": "#/definitions/model.TimeSetRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверная дата",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.AdsRequest": {
+            "type": "object",
+            "required": [
+                "client_id"
+            ],
+            "properties": {
+                "client_id": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "model.AdsResponse": {
+            "type": "object",
+            "required": [
+                "ad_id",
+                "ad_text",
+                "ad_title",
+                "advertiser_id"
+            ],
+            "properties": {
+                "ad_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "ad_text": {
+                    "type": "string"
+                },
+                "ad_title": {
+                    "type": "string"
+                },
+                "advertiser_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "image_url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "https://domain.com/image.jpg"
+                }
+            }
+        },
+        "model.Advertiser": {
+            "type": "object",
+            "required": [
+                "advertiser_id",
+                "name"
+            ],
+            "properties": {
+                "advertiser_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Campaign": {
+            "type": "object",
+            "required": [
+                "ad_text",
+                "ad_title",
+                "advertiser_id",
+                "campaign_id",
+                "clicks_limit",
+                "cost_per_click",
+                "cost_per_impression",
+                "end_date",
+                "impressions_limit",
+                "start_date"
+            ],
+            "properties": {
+                "ad_text": {
+                    "type": "string"
+                },
+                "ad_title": {
+                    "type": "string"
+                },
+                "advertiser_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "campaign_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "clicks_limit": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "cost_per_click": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "cost_per_impression": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "end_date": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "image_url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "https://domain.com/image.jpg"
+                },
+                "impressions_limit": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "start_date": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "targeting": {
+                    "$ref": "#/definitions/model.CampaignTargeting"
+                }
+            }
+        },
+        "model.CampaignCreate": {
+            "type": "object",
+            "required": [
+                "ad_text",
+                "ad_title",
+                "clicks_limit",
+                "cost_per_click",
+                "cost_per_impression",
+                "end_date",
+                "impressions_limit",
+                "start_date"
+            ],
+            "properties": {
+                "ad_text": {
+                    "type": "string"
+                },
+                "ad_title": {
+                    "type": "string"
+                },
+                "clicks_limit": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "cost_per_click": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "cost_per_impression": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "end_date": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "image_url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "https://domain.com/image.jpg"
+                },
+                "impressions_limit": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "start_date": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "targeting": {
+                    "$ref": "#/definitions/model.CampaignTargeting"
+                }
+            }
+        },
+        "model.CampaignStats": {
+            "type": "object",
+            "required": [
+                "clicks_count",
+                "conversion",
+                "impressions_count",
+                "spent_clicks",
+                "spent_impressions",
+                "spent_total"
+            ],
+            "properties": {
+                "clicks_count": {
+                    "type": "integer"
+                },
+                "conversion": {
+                    "type": "number"
+                },
+                "impressions_count": {
+                    "type": "integer"
+                },
+                "spent_clicks": {
+                    "type": "number"
+                },
+                "spent_impressions": {
+                    "type": "number"
+                },
+                "spent_total": {
+                    "type": "number"
+                }
+            }
+        },
+        "model.CampaignStatsDaily": {
+            "type": "object",
+            "required": [
+                "clicks_count",
+                "conversion",
+                "date",
+                "impressions_count",
+                "spent_clicks",
+                "spent_impressions",
+                "spent_total"
+            ],
+            "properties": {
+                "clicks_count": {
+                    "type": "integer"
+                },
+                "conversion": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "integer"
+                },
+                "impressions_count": {
+                    "type": "integer"
+                },
+                "spent_clicks": {
+                    "type": "number"
+                },
+                "spent_impressions": {
+                    "type": "number"
+                },
+                "spent_total": {
+                    "type": "number"
+                }
+            }
+        },
+        "model.CampaignTargeting": {
+            "type": "object",
+            "properties": {
+                "age_from": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "age_to": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "gender": {
+                    "type": "string",
+                    "enum": [
+                        "MALE",
+                        "FEMALE",
+                        "ALL"
+                    ]
+                },
+                "location": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CampaignUpdate": {
+            "type": "object",
+            "required": [
+                "ad_text",
+                "ad_title",
+                "clicks_limit",
+                "cost_per_click",
+                "cost_per_impression",
+                "end_date",
+                "impressions_limit",
+                "start_date"
+            ],
+            "properties": {
+                "ad_text": {
+                    "type": "string"
+                },
+                "ad_title": {
+                    "type": "string"
+                },
+                "clicks_limit": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "cost_per_click": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "cost_per_impression": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "end_date": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "image_url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "https://domain.com/image.jpg"
+                },
+                "impressions_limit": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "start_date": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "targeting": {
+                    "$ref": "#/definitions/model.CampaignTargeting"
+                }
+            }
+        },
+        "model.Client": {
+            "type": "object",
+            "required": [
+                "age",
+                "client_id",
+                "gender",
+                "location",
+                "login"
+            ],
+            "properties": {
+                "age": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "client_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "gender": {
+                    "type": "string",
+                    "enum": [
+                        "MALE",
+                        "FEMALE"
+                    ]
+                },
+                "location": {
+                    "type": "string"
+                },
+                "login": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ErrorResponse": {
+            "type": "object",
+            "required": [
+                "message",
+                "status"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GenerateTextRequest": {
+            "type": "object",
+            "required": [
+                "title",
+                "wishes"
+            ],
+            "properties": {
+                "gender": {
+                    "type": "string",
+                    "enum": [
+                        "MALE",
+                        "FEMALE"
+                    ]
+                },
+                "location": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "wishes": {
+                    "type": "string",
+                    "maxLength": 100
+                }
+            }
+        },
+        "model.GenerateTextResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MLScore": {
+            "type": "object",
+            "required": [
+                "advertiser_id",
+                "client_id",
+                "score"
+            ],
+            "properties": {
+                "advertiser_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "client_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "score": {
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "model.ModerationRequest": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.PingResponse": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.TimeSetRequest": {
+            "type": "object",
+            "required": [
+                "current_date"
+            ],
+            "properties": {
+                "current_date": {
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        }
+    }
+}

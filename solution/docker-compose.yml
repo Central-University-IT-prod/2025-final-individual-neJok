@@ -1,0 +1,88 @@
+services:
+  backend:
+    build: backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_ADDRESS=${SERVER_ADDRESS}
+      - MONGODB_USER=${MONGODB_USER}
+      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+      - MONGODB_HOST=${MONGODB_HOST}
+      - MONGODB_PORT=${MONGODB_PORT}
+      - MONGODB_DB=${MONGODB_DB}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - S3_REGION=${S3_REGION}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - S3_ENDPOINT=${S3_ENDPOINT}
+      - S3_BUCKET=${S3_BUCKET}
+      - S3_PUBLIC=${S3_PUBLIC}
+      - GIGA_CHAT_AUTH_BASE_URL=${GIGA_CHAT_AUTH_BASE_URL}
+      - GIGA_CHAT_MODELS_BASE_URL=${GIGA_CHAT_MODELS_BASE_URL}
+      - GIGA_CHAT_AUTH_KEY=${GIGA_CHAT_AUTH_KEY}
+      - OPENAI_TOKEN=${OPENAI_TOKEN}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}
+    volumes:
+      - ./backend/certs:/certs
+    depends_on:
+      - mongodb
+      - redis
+      - minio
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+
+  redis:
+    image: redis:7.4
+    ports:
+      - "6379:6379"
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
+      - MINIO_ROOT_USER=${S3_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${S3_SECRET_KEY}
+      - MINIO_CONSOLE_PORT_NUMBER=9001
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_INSTALL_PLUGINS=yesoreyeram-infinity-datasource
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources/
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards/
+    depends_on:
+      - backend
+  
+  bot:
+    build: bot
+    container_name: bot
+    environment:
+      - BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - API_URL=http://backend:8080
+      - GRAFANA_URL=http://localhost:3000
+    volumes:
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources/
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards/
+    depends_on:
+      - backend
+
+volumes:
+  minio_data:
+  grafana_data:

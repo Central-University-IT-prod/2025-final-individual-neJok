@@ -1,0 +1,9 @@
+apiVersion: 1
+
+datasources:
+  - name: InfinityAPI
+    type: yesoreyeram-infinity-datasource
+    access: proxy
+    uid: my-grafana-infinity-datasource-uid
+    url: "http://backend:8080"
+    isDefault: true

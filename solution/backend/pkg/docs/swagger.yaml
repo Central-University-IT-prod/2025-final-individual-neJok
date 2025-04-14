@@ -1,0 +1,1085 @@
+definitions:
+  model.AdsRequest:
+    properties:
+      client_id:
+        format: uuid
+        type: string
+    required:
+    - client_id
+    type: object
+  model.AdsResponse:
+    properties:
+      ad_id:
+        format: uuid
+        type: string
+      ad_text:
+        type: string
+      ad_title:
+        type: string
+      advertiser_id:
+        format: uuid
+        type: string
+      image_url:
+        example: https://domain.com/image.jpg
+        format: url
+        type: string
+    required:
+    - ad_id
+    - ad_text
+    - ad_title
+    - advertiser_id
+    type: object
+  model.Advertiser:
+    properties:
+      advertiser_id:
+        format: uuid
+        type: string
+      name:
+        type: string
+    required:
+    - advertiser_id
+    - name
+    type: object
+  model.Campaign:
+    properties:
+      ad_text:
+        type: string
+      ad_title:
+        type: string
+      advertiser_id:
+        format: uuid
+        type: string
+      campaign_id:
+        format: uuid
+        type: string
+      clicks_limit:
+        minimum: 0
+        type: integer
+      cost_per_click:
+        minimum: 0
+        type: number
+      cost_per_impression:
+        minimum: 0
+        type: number
+      end_date:
+        minimum: 0
+        type: integer
+      image_url:
+        example: https://domain.com/image.jpg
+        format: url
+        type: string
+      impressions_limit:
+        minimum: 0
+        type: integer
+      start_date:
+        minimum: 0
+        type: integer
+      targeting:
+        $ref: '#/definitions/model.CampaignTargeting'
+    required:
+    - ad_text
+    - ad_title
+    - advertiser_id
+    - campaign_id
+    - clicks_limit
+    - cost_per_click
+    - cost_per_impression
+    - end_date
+    - impressions_limit
+    - start_date
+    type: object
+  model.CampaignCreate:
+    properties:
+      ad_text:
+        type: string
+      ad_title:
+        type: string
+      clicks_limit:
+        minimum: 0
+        type: integer
+      cost_per_click:
+        minimum: 0
+        type: number
+      cost_per_impression:
+        minimum: 0
+        type: number
+      end_date:
+        minimum: 0
+        type: integer
+      image_url:
+        example: https://domain.com/image.jpg
+        format: url
+        type: string
+      impressions_limit:
+        minimum: 0
+        type: integer
+      start_date:
+        minimum: 0
+        type: integer
+      targeting:
+        $ref: '#/definitions/model.CampaignTargeting'
+    required:
+    - ad_text
+    - ad_title
+    - clicks_limit
+    - cost_per_click
+    - cost_per_impression
+    - end_date
+    - impressions_limit
+    - start_date
+    type: object
+  model.CampaignStats:
+    properties:
+      clicks_count:
+        type: integer
+      conversion:
+        type: number
+      impressions_count:
+        type: integer
+      spent_clicks:
+        type: number
+      spent_impressions:
+        type: number
+      spent_total:
+        type: number
+    required:
+    - clicks_count
+    - conversion
+    - impressions_count
+    - spent_clicks
+    - spent_impressions
+    - spent_total
+    type: object
+  model.CampaignStatsDaily:
+    properties:
+      clicks_count:
+        type: integer
+      conversion:
+        type: number
+      date:
+        type: integer
+      impressions_count:
+        type: integer
+      spent_clicks:
+        type: number
+      spent_impressions:
+        type: number
+      spent_total:
+        type: number
+    required:
+    - clicks_count
+    - conversion
+    - date
+    - impressions_count
+    - spent_clicks
+    - spent_impressions
+    - spent_total
+    type: object
+  model.CampaignTargeting:
+    properties:
+      age_from:
+        minimum: 0
+        type: integer
+      age_to:
+        minimum: 0
+        type: integer
+      gender:
+        enum:
+        - MALE
+        - FEMALE
+        - ALL
+        type: string
+      location:
+        type: string
+    type: object
+  model.CampaignUpdate:
+    properties:
+      ad_text:
+        type: string
+      ad_title:
+        type: string
+      clicks_limit:
+        minimum: 0
+        type: integer
+      cost_per_click:
+        minimum: 0
+        type: number
+      cost_per_impression:
+        minimum: 0
+        type: number
+      end_date:
+        minimum: 0
+        type: integer
+      image_url:
+        example: https://domain.com/image.jpg
+        format: url
+        type: string
+      impressions_limit:
+        minimum: 0
+        type: integer
+      start_date:
+        minimum: 0
+        type: integer
+      targeting:
+        $ref: '#/definitions/model.CampaignTargeting'
+    required:
+    - ad_text
+    - ad_title
+    - clicks_limit
+    - cost_per_click
+    - cost_per_impression
+    - end_date
+    - impressions_limit
+    - start_date
+    type: object
+  model.Client:
+    properties:
+      age:
+        maximum: 100
+        minimum: 0
+        type: integer
+      client_id:
+        format: uuid
+        type: string
+      gender:
+        enum:
+        - MALE
+        - FEMALE
+        type: string
+      location:
+        type: string
+      login:
+        type: string
+    required:
+    - age
+    - client_id
+    - gender
+    - location
+    - login
+    type: object
+  model.ErrorResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+    required:
+    - message
+    - status
+    type: object
+  model.GenerateTextRequest:
+    properties:
+      gender:
+        enum:
+        - MALE
+        - FEMALE
+        type: string
+      location:
+        type: string
+      title:
+        type: string
+      wishes:
+        maxLength: 100
+        type: string
+    required:
+    - title
+    - wishes
+    type: object
+  model.GenerateTextResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  model.MLScore:
+    properties:
+      advertiser_id:
+        format: uuid
+        type: string
+      client_id:
+        format: uuid
+        type: string
+      score:
+        minimum: 0
+        type: integer
+    required:
+    - advertiser_id
+    - client_id
+    - score
+    type: object
+  model.ModerationRequest:
+    properties:
+      status:
+        type: boolean
+    required:
+    - status
+    type: object
+  model.PingResponse:
+    properties:
+      status:
+        type: string
+    required:
+    - status
+    type: object
+  model.TimeSetRequest:
+    properties:
+      current_date:
+        minimum: 0
+        type: integer
+    required:
+    - current_date
+    type: object
+info:
+  contact: {}
+  title: PROD Backend 2025 Advertising Platform API
+  version: "1.0"
+paths:
+  /ads:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает информацию о рекламе, соответствующей таргетингу клиента.
+      parameters:
+      - description: Идентификатор клиента
+        format: uuid
+        in: query
+        name: client_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о кампании
+          schema:
+            $ref: '#/definitions/model.AdsResponse'
+        "400":
+          description: Некорректный идентификатор клиента
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Клиент не найден или не найдена подходящая кампания
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Получить информацию о рекламе для клиента
+      tags:
+      - Реклама
+  /ads/{campaignID}/click:
+    post:
+      consumes:
+      - application/json
+      description: Регистрирует клик клиента по рекламе, проверяя наличие предыдущих
+        действий (просмотр и клик) и сроки действия кампании
+      parameters:
+      - description: Идентификатор кампании
+        format: uuid
+        in: path
+        name: campaignID
+        required: true
+        type: string
+      - description: Идентификатор клиента
+        in: body
+        name: ClientID
+        required: true
+        schema:
+          $ref: '#/definitions/model.AdsRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Клик успешно зарегистрирован
+        "400":
+          description: Неверный формат идентификаторов клиента или кампании, или клиент
+            уже кликнул
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Клиент или кампания не найдены
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "410":
+          description: Кампания не началась или завершена
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Зарегистрировать клик по рекламе
+      tags:
+      - Реклама
+  /advertisers/{advertiserID}:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает информацию о рекламодателе по указанному идентификатору
+      parameters:
+      - description: Идентификатор рекламодателя
+        format: uuid
+        in: path
+        name: advertiserID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о рекламодателе
+          schema:
+            $ref: '#/definitions/model.Advertiser'
+        "400":
+          description: Неверный формат идентификатора рекламодателя
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Рекламодатель не найден
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Получить информацию о рекламодателе по ID
+      tags:
+      - Рекламодатели
+  /advertisers/{advertiserID}/campaigns:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список кампаний для указанного рекламодателя с возможностью
+        пагинации.
+      parameters:
+      - description: Идентификатор рекламодателя
+        format: uuid
+        in: path
+        name: advertiserID
+        required: true
+        type: string
+      - default: 10
+        description: Количество кампаний на страницу
+        in: query
+        name: size
+        type: integer
+      - default: 0
+        description: Номер страницы начиная с 0
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список кампаний
+          schema:
+            items:
+              $ref: '#/definitions/model.Campaign'
+            type: array
+        "400":
+          description: Ошибки в параметрах запроса
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Рекламодатель не найден
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Получить список кампаний рекламодателя
+      tags:
+      - Кампании
+    post:
+      consumes:
+      - application/json
+      - ' multipart/form-data'
+      description: Создает новую кампанию для рекламодателя, с проверкой параметров,
+        таких как даты, таргетинг, изображение.
+      parameters:
+      - description: Идентификатор рекламодателя
+        format: uuid
+        in: path
+        name: advertiserID
+        required: true
+        type: string
+      - description: Изображение для кампании (Доступно только с multipart/form-data)
+        in: formData
+        name: image_file
+        type: file
+      - description: Данные кампании
+        in: body
+        name: campaign
+        required: true
+        schema:
+          $ref: '#/definitions/model.CampaignCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Созданная кампания
+          schema:
+            $ref: '#/definitions/model.Campaign'
+        "400":
+          description: Ошибки в данных запроса (неверные даты, некорректный таргетинг,
+            ошибка с изображением)
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Рекламодатель не найден
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Текст или название рекламной кампании не прошли модерацию
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Создать кампанию
+      tags:
+      - Кампании
+  /advertisers/{advertiserID}/campaigns/{campaignID}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет кампанию по ID для указанного рекламодателя
+      parameters:
+      - description: Идентификатор рекламодателя
+        format: uuid
+        in: path
+        name: advertiserID
+        required: true
+        type: string
+      - description: Идентификатор кампании
+        format: uuid
+        in: path
+        name: campaignID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Кампания успешно удалена
+        "400":
+          description: Неверные идентификаторы рекламодателя или кампании
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Кампания не найдена
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Удалить кампанию
+      tags:
+      - Кампании
+    get:
+      consumes:
+      - application/json
+      description: Возвращает информацию о кампании для указанного рекламодателя по
+        его ID и ID кампании
+      parameters:
+      - description: Идентификатор рекламодателя
+        format: uuid
+        in: path
+        name: advertiserID
+        required: true
+        type: string
+      - description: Идентификатор кампании
+        format: uuid
+        in: path
+        name: campaignID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о кампании
+          schema:
+            $ref: '#/definitions/model.Campaign'
+        "400":
+          description: Неверные идентификаторы рекламодателя или кампании
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Кампания не найдена
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Получить информацию о кампании по ID
+      tags:
+      - Кампании
+    put:
+      consumes:
+      - application/json
+      - ' multipart/form-data'
+      description: Обновляет данные кампании для указанного рекламодателя и кампании,
+        с учетом проверок на невозможность изменения некоторых полей после запуска
+        кампании. Нельзя передать одновременно image_url и image_file. Скорее всего
+        со swagger не получиться отправить запрос с image_file, используйте для тестирования
+        этого postman или альтернативы.
+      parameters:
+      - description: Идентификатор рекламодателя
+        format: uuid
+        in: path
+        name: advertiserID
+        required: true
+        type: string
+      - description: Идентификатор кампании
+        format: uuid
+        in: path
+        name: campaignID
+        required: true
+        type: string
+      - description: Обновленные данные кампании
+        in: body
+        name: campaign
+        required: true
+        schema:
+          $ref: '#/definitions/model.CampaignUpdate'
+      - description: Изображение для кампании (Доступно только с multipart/form-data)
+        in: formData
+        name: image_file
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Обновленная кампания
+          schema:
+            $ref: '#/definitions/model.Campaign'
+        "400":
+          description: Ошибки в данных запроса (например, некорректные даты или поля,
+            которые нельзя изменить после запуска)
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Кампания не найдена
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Текст или название рекламной кампании не прошли модерацию
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Обновить информацию о кампании
+      tags:
+      - Кампании
+  /advertisers/bulk:
+    post:
+      consumes:
+      - application/json
+      description: Создает или обновляет информацию о рекламодателе с проверкой уникальности
+        идентификатора
+      parameters:
+      - description: Список рекламодателей для создания или обновления
+        in: body
+        name: advertisers
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/model.Advertiser'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Информация о рекламодателях, которые были успешно созданы или
+            обновлены
+          schema:
+            items:
+              $ref: '#/definitions/model.Advertiser'
+            type: array
+        "400":
+          description: Невалидные данные или повторяющиеся идентификаторы рекламодателей
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Создать или обновить рекламодателя
+      tags:
+      - Рекламодатели
+  /ai/text/generate:
+    post:
+      consumes:
+      - application/json
+      description: Создает текст для рекламной кампании по пожеланиям от пользователя
+      parameters:
+      - description: Название товара и пожелания
+        in: body
+        name: GenerateInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.GenerateTextRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Обновленная кампания
+          schema:
+            $ref: '#/definitions/model.GenerateTextResponse'
+        "400":
+          description: Невалидные данные
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.GenerateTextResponse'
+      summary: Сгенерировать текст для рекламной кампании
+      tags:
+      - AI
+  /ai/text/moderation:
+    post:
+      consumes:
+      - application/json
+      description: Включает или выключает модерацию текстов и названий рекламных кампаний
+      parameters:
+      - description: true - включить модерацию, false - выключить модерацию
+        in: body
+        name: Moderation
+        required: true
+        schema:
+          $ref: '#/definitions/model.ModerationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Обновленная кампания
+          schema:
+            $ref: '#/definitions/model.ModerationRequest'
+        "400":
+          description: Невалидные данные
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Включить или выключить модерацию текстов
+      tags:
+      - AI
+  /clients/{clientID}:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает информацию о клиенте по указанному идентификатору
+      parameters:
+      - description: Идентификатор клиента
+        format: uuid
+        in: path
+        name: clientID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о клиенте
+          schema:
+            $ref: '#/definitions/model.Client'
+        "400":
+          description: Неверный формат идентификатора клиента
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Клиент не найден
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Получить информацию о клиенте по ID
+      tags:
+      - Клиенты
+  /clients/bulk:
+    post:
+      consumes:
+      - application/json
+      description: Создает или обновляет информацию о клиентах, переданных в запросе
+      parameters:
+      - description: Список клиентов для создания или обновления
+        in: body
+        name: clients
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/model.Client'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Информация о клиентах, которые были успешно созданы или обновлены
+          schema:
+            items:
+              $ref: '#/definitions/model.Client'
+            type: array
+        "400":
+          description: Невалидные данные или повторяющиеся идентификаторы клиентов
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Создать или обновить клиента
+      tags:
+      - Клиенты
+  /ml-scores:
+    post:
+      consumes:
+      - application/json
+      description: Создает или обновляет ML-оценку для клиента и рекламодателя. Я
+        бы хотел возвращать тут 204, но по заданию в спецификации стоит 200.
+      parameters:
+      - description: Модель ML-оценки
+        in: body
+        name: mlScore
+        required: true
+        schema:
+          $ref: '#/definitions/model.MLScore'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Операция успешно выполнена
+        "400":
+          description: Неверные данные или отсутствуют клиент или рекламодатель
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Клиент или рекламодатель не найдены
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Создать или обновить ML-оценку
+      tags:
+      - ML-оценки
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: Проверка, что сервер работает и отвечает корректно
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ответ с состоянием сервера
+          schema:
+            $ref: '#/definitions/model.PingResponse'
+      summary: Проверка работоспособности сервера
+      tags:
+      - ping
+  /stats/advertisers/{advertiserID}/campaigns:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает агрегированную статистику по указанному рекламодателю
+      parameters:
+      - description: Идентификатор рекламодателя
+        format: uuid
+        in: path
+        name: advertiserID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Агрегированная статистика по рекламодателю
+          schema:
+            $ref: '#/definitions/model.CampaignStats'
+        "400":
+          description: Неверный идентификатор рекламодателя
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Рекламодатель не найден
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Получить статистику по рекламодателю
+      tags:
+      - Статистика
+  /stats/advertisers/{advertiserID}/campaigns/daily:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает агрегированную статистику по рекламодателю за каждый
+        день, начиная с даты создания рекламодателя
+      parameters:
+      - description: Идентификатор рекламодателя
+        format: uuid
+        in: path
+        name: advertiserID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Агрегированная статистика по рекламодателю за каждый день
+          schema:
+            items:
+              $ref: '#/definitions/model.CampaignStatsDaily'
+            type: array
+        "400":
+          description: Неверный идентификатор рекламодателя
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Рекламодатель не найден
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Получить дневную статистику по рекламодателю
+      tags:
+      - Статистика
+  /stats/campaigns/{campaignID}:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает агрегированную статистику по указанной кампании
+      parameters:
+      - description: Идентификатор кампании
+        format: uuid
+        in: path
+        name: campaignID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Агрегированная статистика по кампании
+          schema:
+            $ref: '#/definitions/model.CampaignStats'
+        "400":
+          description: Неверный идентификатор кампании
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Кампания не найдена
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Получить статистику по кампании
+      tags:
+      - Статистика
+  /stats/campaigns/{campaignID}/daily:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает агрегированную статистику по кампаниям за каждый день
+        от даты начала до текущего дня
+      parameters:
+      - description: Идентификатор кампании
+        format: uuid
+        in: path
+        name: campaignID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Агрегированная статистика по кампании за каждый день
+          schema:
+            items:
+              $ref: '#/definitions/model.CampaignStatsDaily'
+            type: array
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Кампания не найдена
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Получить дневную статистику по кампании
+      tags:
+      - Статистика
+  /time/advance:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает текущую дату
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Дата успешно получена
+          schema:
+            $ref: '#/definitions/model.TimeSetRequest'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Получить текущую дату
+      tags:
+      - Время
+    post:
+      consumes:
+      - application/json
+      description: Устанавливает текущую дату в кэш, только если она не меньше текущей
+        даты
+      parameters:
+      - description: Запрос на установку текущей даты
+        in: body
+        name: time
+        required: true
+        schema:
+          $ref: '#/definitions/model.TimeSetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Дата успешно установлена
+          schema:
+            $ref: '#/definitions/model.TimeSetRequest'
+        "400":
+          description: Неверная дата
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Установить текущую дату
+      tags:
+      - Время
+swagger: "2.0"
